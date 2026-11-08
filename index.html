@@ -1,0 +1,317 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小さな挑戦さがし</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Fredoka:wght@600;700&display=swap">
+<style>
+/* Layout: one narrow column for phones — tag chips, level switch, then challenge cards */
+:root {
+  --bg: #FFF6EE; --surface: #FFFFFF; --tint: #FFE3CC; --ink: #3B2620; --muted: #7A5A4C;
+  --accent: #C8492F; --accent-ink: #FFFFFF; --gold: #F6B93B; --line: #F2CDB0;
+  --display: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+  --latin: 'Fredoka', 'Zen Maru Gothic', sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #241A16; --surface: #33251F; --tint: #4A3226; --ink: #FBEDE2; --muted: #D2B3A3;
+  --accent: #F08A6E; --accent-ink: #241A16; --gold: #F6C766; --line: #5A3F33; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #241A16; --surface: #33251F; --tint: #4A3226; --ink: #FBEDE2; --muted: #D2B3A3;
+  --accent: #F08A6E; --accent-ink: #241A16; --gold: #F6C766; --line: #5A3F33; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--display); }
+.wrap { max-width: 640px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 22px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
+h1 { margin: 4px 0 6px; font-size: clamp(28px, 7vw, 38px); font-weight: 900; line-height: 1.15; text-wrap: balance; }
+.lead { margin: 0; font-size: 15px; line-height: 1.7; color: var(--muted); }
+.note { font-size: 12.5px; color: var(--muted); background: var(--tint); border-radius: 10px; padding: 8px 12px; line-height: 1.6; }
+h2 { margin: 0 0 10px; font-size: 16px; font-weight: 900; display: flex; align-items: baseline; gap: 8px; }
+h2 small { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: inherit; font-size: 15px; font-weight: 700; border: 2px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 14px; cursor: pointer; min-height: 44px; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip:disabled { opacity: .45; cursor: not-allowed; }
+.seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; background: var(--tint); padding: 5px; border-radius: 16px; }
+.seg button { font: inherit; font-weight: 700; font-size: 15px; border: 0; border-radius: 12px; background: transparent; color: var(--ink); padding: 8px 4px; cursor: pointer; min-height: 44px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.seg button span { font-size: 11px; font-weight: 500; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); box-shadow: 0 1px 0 var(--line); }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.count { font-size: 13px; color: var(--muted); }
+.ghost { font: inherit; font-weight: 700; font-size: 14px; border: 2px solid var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; min-height: 44px; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.card { background: var(--surface); border-radius: 18px; padding: 14px 16px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: start; border: 2px solid transparent; }
+.card.picked { border-color: var(--accent); }
+.lv { grid-row: span 2; width: 40px; height: 40px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; background: var(--tint); color: var(--ink); }
+.lv.matsu { background: var(--accent); color: var(--accent-ink); }
+.lv.take { background: var(--gold); color: #3B2620; }
+.text { font-size: 16px; font-weight: 700; line-height: 1.55; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+.tags { font-size: 12.5px; color: var(--muted); }
+.pick { font: inherit; font-size: 13px; font-weight: 700; border: 0; background: var(--tint); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; min-height: 36px; }
+.card.picked .pick { background: var(--accent); color: var(--accent-ink); }
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); background: var(--surface); border-radius: 18px; line-height: 1.7; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 14px; font-weight: 700; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.search, .own input { font: inherit; font-size: 16px; width: 100%; box-sizing: border-box; border: 2px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 14px; padding: 10px 14px; min-height: 44px; }
+.own { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.own input { flex: 1 1 180px; width: auto; }
+.chip.mine { border-style: dashed; }
+</style>
+</head><body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">あの時、どうする？｜ゲームのあとで</div>
+    <h1>小さな挑戦さがし</h1>
+    <p class="lead">ゲームで見つけた #価値観ハッシュタグ を選ぶと、今週できる「小さな挑戦」が出てきます。梅・竹・松で、ちょうどいい大きさを選んでください。</p>
+  </header>
+  <div class="note">ハッシュタグは、テン・アカデミーのバリューカード81枚と同じ言葉です。手元のカードの言葉で探してください。</div>
+
+  <section>
+    <h2>1. ハッシュタグを選ぶ <small>3つまで</small></h2>
+    <input class="search" id="search" type="search" placeholder="カードの言葉で探す（例：挑戦）" autocomplete="off">
+    <div class="chips" id="chips" style="margin-top: 10px;"></div>
+  </section>
+
+  <section>
+    <h2>2. 大きさを選ぶ</h2>
+    <div class="seg" id="seg"></div>
+  </section>
+
+  <section>
+    <div class="row" style="margin-bottom: 10px;">
+      <h2 style="margin: 0;">3. 今週の挑戦をえらぶ</h2>
+      <button class="ghost" id="random" type="button">おまかせで1つ</button>
+    </div>
+    <div class="count" id="count" style="margin-bottom: 8px;"></div>
+    <div class="list" id="list"></div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const LEVELS = [
+  { id: 'ume', label: '梅', sub: '今日・5分' },
+  { id: 'take', label: '竹', sub: '今週・半日' },
+  { id: 'matsu', label: '松', sub: '少し勇気' },
+  { id: 'all', label: 'ぜんぶ', sub: '全部見る' }
+];
+const CARDS = [
+  ['挑戦', 'いつもなら「やめとこう」と思うことを、今日1つだけやってみる', '苦手なことに、30分だけ取り組んでみる', '迷っていた募集やコンテストに応募する'],
+  ['自立', '明日の準備を、全部自分でやる', '自分の昼ごはんやお弁当を、自分で作る', '1か月のお金の使い方を、自分で計画して管理する'],
+  ['優しさ', '困っていそうな人に「大丈夫？」と声をかける', '家族の仕事を1つ、代わりにやる', 'ボランティアに1回参加する'],
+  ['面白さ', '今日あった面白いことを、1人に話す', '友達と「くだらないけど面白い企画」を1つやる', '自分が面白いと思うことを、作品や動画にして人に見せる'],
+  ['感謝', '「ありがとう」を1人に、言葉で伝える', 'お世話になった人に、手紙かメッセージを書く', '感謝を伝えたい人に、会いに行く'],
+  ['誠実', '後回しにしていた返信を、1つ返す', '約束の期限を1つ、前倒しで守る', '言いにくいけど伝えるべきことを、正直に話す'],
+  ['情熱', '好きなことについて、5分語る', '好きなことに、半日まるごと使う', '好きなことの大会・発表会・展示に申し込む'],
+  ['好奇心', '気になったことを1つ、その場で調べる', '博物館など、普段行かない場所に行く', '気になる分野の詳しい人に、質問しに行く'],
+  ['成長', '昨日の自分よりできたことを、1つ書く', '1週間続ける目標を決めて、毎日記録する', '今の自分には少し難しい検定や講座に申し込む'],
+  ['自由', '予定を入れない1時間を作って、やりたいことだけする', '行き先を決めずに、半日出かけてみる', '自分で企画したことを1つ実行する（会、イベント、旅など）'],
+  ['責任', '今日引き受けたことを、最後までやり切る', '家の仕事を1つ、1週間担当する', '係やリーダーなどの役割に立候補する'],
+  ['貢献', '教室や家で、誰も気づかない片付けを1つする', '地域や学校のボランティアを調べて、1つ問い合わせる', 'ボランティアや地域の活動に参加する'],
+  ['仲間', '仲間に「おつかれ」「ありがとう」を送る', '仲間と目標を1つ決めて、一緒に取り組む', '同じ興味の人が集まるコミュニティやイベントに参加する'],
+  ['家族', '家族に、今日あったことを1つ話す', '家族と一緒に、ご飯を作るか出かける', '家族に「若いころに挑戦したこと」を聞いて、書き残す'],
+  ['友情', '友達に、1通メッセージを送る', '友達と、やったことのないことを一緒にやる', 'しばらく会っていない友達を誘って、会う'],
+  ['信頼', '頼まれたことを、すぐにやる', '信頼できる人に、悩みを1つ相談してみる', 'グループで誰かに役割を任せて、口を出さずに見守る'],
+  ['勇気', '授業や話し合いで、1回手を挙げる', '話したことのない人に、話しかける', '怖くてやっていなかったことに申し込む'],
+  ['努力', '苦手な科目を、15分だけやる', '1週間、毎日同じ練習を続ける', '目標を決めて1か月の計画を立て、今日から始める'],
+  ['継続', '1分でできる習慣を1つ決めて、今日やる', '7日連続で、カレンダーに印をつける', '30日チャレンジを決めて、人に宣言する'],
+  ['創造', '10分で、何かを描くか書く', '身近な材料で、何か1つ作る', '作ったものを、作品展やコンテストに出す'],
+  ['冒険', 'いつもと違う道で帰る', '行ったことのない町へ行ってみる', '一人で日帰り旅をする'],
+  ['学び', '知らない言葉を1つ調べて、人に説明してみる', '図書館で本を1冊借りて読む', 'オープンキャンパスや講座に申し込む'],
+  ['探究', '「なぜ？」と思ったことを、1つメモする', 'その「なぜ？」を半日かけて調べて、まとめる', '調べたことを発表するか、詳しい人に聞きに行く'],
+  ['本気', '今いちばん本気になりたいことを、1行で書く', 'それに、スマホを置いて2時間集中する', '本気の目標を人に宣言して、締め切りを決める'],
+  ['志', '将来どんな人になりたいかを、1行で書く', 'その志に近い人の本やインタビューを読む', 'その分野で働く人に、実際に話を聞く'],
+  ['誇り', '自分が誇れることを、3つ書く', '誇れることを、1人に話してみる', '自分の得意を、人前で披露する'],
+  ['謙虚', '今日だれかから学んだことを、1つ書く', '後輩や年下に、アドバイスを求めてみる', '自分の作品や考えに、3人から率直な意見をもらう'],
+  ['素直', 'もらったアドバイスを1つ、すぐ試す', '「わからない」と言って、質問する', '言いにくい相手に、自分の気持ちを素直に伝える'],
+  ['正直', '本当に思っていることを、ノートに1つ書く', '「実はね」と、本音を1つ友達に話す', '自分のミスを自分から打ち明けて、謝る'],
+  ['公平', '話していない人にも、話をふる', 'グループで、全員の意見を聞いてから決める', '身の回りの不公平を1つ調べて、改善案を大人に伝える'],
+  ['思いやり', '相手が喜ぶことを1つ考えて、やる', '落ち込んでいる人の話を、最後まで聞く', '誰かのために、半日時間を使う'],
+  ['共感', '友達の話に「それで、どう思った？」と聞く', '自分と違う意見の人の理由を、3つ考える', '自分と違う環境で暮らす人の話を、聞きに行く'],
+  ['協力', '誰かの作業を、1つ手伝う', '友達と役割分担して、1つのことをやり切る', 'チームでイベントを1つ企画する'],
+  ['リーダーシップ', '「やろう」と、最初に言う', '遊びや勉強会を、自分から呼びかける', 'リーダー役に立候補する'],
+  ['主体性', '言われる前に、1つ行動する', 'やりたいことを自分で計画して、実行する', '学校や地域に「こうしたい」と提案する'],
+  ['影響力', '好きなものを、1人にすすめる', '自分の考えを、作品やSNSで発信する', '人前で発表する機会に、手を挙げる'],
+  ['達成', '今日のやることを3つ書いて、全部終わらせる', '1週間の小さな目標を決めて、達成する', '大きな目標から逆算して計画を立て、始める'],
+  ['成功', '最近うまくいったことと、その理由を書く', '憧れの人が成功するまでの道のりを調べる', '自分なりの「成功」を決めて、最初の行動をする'],
+  ['安定', '毎日続けられる小さな習慣を、1つ決める', '1週間、同じ時間に起きてみる', '資格や検定を1つ決めて、申し込む'],
+  ['安心', '安心できる時間や場所を、1つ書き出す', '不安なことを、信頼できる人に話す', '学校や家の外に、安心できる居場所を1つ探す'],
+  ['健康', '寝る前に、5分ストレッチする', '1週間、いつもより30分早く寝る', 'スポーツや運動の体験レッスンに申し込む'],
+  ['楽しさ', '今日いちばん楽しかったことを、1行で書く', '友達とボードゲームやカードゲームをする', '好きなことで、人を楽しませる企画をやってみる'],
+  ['ユーモア', '今日あった笑えることを、誰かに話す', '家族や友達を笑わせる、小さな仕掛けをする', '文化祭などで、人を笑わせる出し物をやる'],
+  ['美しさ', 'きれいだと思ったものを、写真に撮る', '美術館や庭園に行く', '自分が美しいと思う作品を作って、人に見せる'],
+  ['表現', '今の気持ちを、1行で書く', '絵・文・音楽・動画で、作品を1つ作る', '作品を、人前やSNSやコンテストで発表する'],
+  ['個性', '自分らしいところを、3つ書く', '人とかぶらない好きなことを、友達に紹介する', '自分らしさが出るものを作って、人に見せる'],
+  ['多様性', '自分と違う考えの記事を、1つ読む', '違う学校や年代の人と話す', '国際交流や多文化のイベントに参加する'],
+  ['平和', '世界のニュースを、1つ読む', '平和や戦争についての本を1冊読む', '資料館や平和学習のイベントに行って、感じたことを人に話す'],
+  ['社会', '気になる社会問題を、1つ調べる', 'その問題について、家族や友達と話す', 'その問題に取り組む団体のイベントに参加する'],
+  ['地域', '地元で、入ったことのない店に行く', '地域のお祭りやイベントを調べて、行ってみる', '地域のボランティアや活動に参加する'],
+  ['自然', '空や木を、5分ながめる', '公園や山を、ゆっくり歩く', '自然体験のプログラムに申し込む'],
+  ['伝統', '家族に伝わる習慣を、1つ聞く', '伝統行事や工芸を、見学する', '伝統文化の体験教室に申し込む'],
+  ['変化', 'いつものやり方を、1つ変える', '1週間、新しい習慣を試す', '新しい部活・習い事・コミュニティに飛び込む'],
+  ['革新', '身の回りの「不便」を、1つメモする', 'その不便を解決するアイデアを、3つ考える', 'アイデアを試作か提案の形にして、人に見せる'],
+  ['スピード', '迷っていることを、5分以内に決める', '宿題を、時間を計って終わらせる', '思いついたことを、その日のうちに実行する'],
+  ['丁寧さ', 'ノートを1ページ、丁寧に書く', '部屋の一角を、時間をかけて整える', '1つの作品を、時間をかけて仕上げる'],
+  ['論理', '自分の意見を、理由3つで説明する', '気になるテーマの賛成・反対を調べて、表にまとめる', 'ディベートや小論文のコンテストに挑戦する'],
+  ['直感', 'メニューを3秒で決める', '直感で気になった場所に、行ってみる', '直感で「やりたい」と思ったことに申し込む'],
+  ['知恵', '家族や年上の人に、生活の知恵を1つ聞く', '困りごとを1つ、工夫で解決する', '自分の知恵やコツを、人に教える'],
+  ['専門性', '好きな分野の言葉を、1つ覚える', 'その分野の本を、1冊読む', 'その道の専門家に話を聞くか、講座に申し込む'],
+  ['静けさ', 'スマホを置いて、10分静かに過ごす', '図書館やお寺など、静かな場所に一人で行く', '1日、デジタルデトックスをする'],
+  ['お金', '今月使ったお金を3つ書き出して、一番満足したものを決める', 'フリマアプリに、使っていない物を1つ出品してみる', '1か月の予算を決めて、家計簿をつけ始める'],
+  ['評価', '今日の自分に10点満点で点をつけて、理由を書く', '自分の作品に、人から感想をもらう', '検定やコンテストで、外からの評価を受けてみる'],
+  ['尊敬', '尊敬する人と、その理由を書く', '尊敬する人の本やインタビューを読む', '尊敬する人に、手紙を書くか会いに行く'],
+  ['愛', '大切な人に、好きなところを1つ伝える', '大切な人のために、時間を使う', '大切な人に、ふだん言えない気持ちを手紙で伝える'],
+  ['つながり', 'しばらく連絡していない人に、メッセージを送る', '友達と友達を、紹介してつなぐ', '学校の外のコミュニティに参加する'],
+  ['出会い', '知らない人に、あいさつする', '初めての場所のイベントに行く', '一人で学校外のイベントに参加して、3人と話す'],
+  ['感動', '感動した瞬間を、1つ書く', '映画・ライブ・舞台を見に行く', '誰かを感動させるものを、作るか企画する'],
+  ['遊び心', 'いつものことに、1つ遊びを加える', '新しい遊びを考えて、友達とやる', '遊び心のある企画を、学校や地域でやる'],
+  ['粘り強さ', 'あきらめかけた問題に、もう5分取り組む', '一度失敗したことに、もう一度挑戦する', '難しい目標に、1か月取り組む'],
+  ['行動', '今日思ったことを、今5分でやる', '調べるだけだったことを、実際にやる', '迷っている申し込みを、今週中に出す'],
+  ['規律', '起きる時間を決めて、守る', '1週間、スマホの時間を決めて守る', '1か月の生活ルールを作って、続ける'],
+  ['秩序', '机の上を片付ける', 'カバンか部屋を、全部整理する', '部活やグループのルールや仕組みを、提案して整える'],
+  ['余裕', '予定より5分早く動く', '何もしない時間を、半日作る', '予定を詰めこみすぎない1週間を計画して、守る'],
+  ['シンプル', '使っていない物を、1つ手放す', '持ち物やアプリを見直して、減らす', '1週間、物を増やさずに過ごす'],
+  ['世界', '外国のニュースを、1つ読む', 'オンラインなどで、外国の人と話す', '留学や海外研修の説明会に申し込む'],
+  ['夢', '夢を1行で書く', '夢を叶えた人の道のりを調べる', '夢を人に話して、最初の一歩を実行する'],
+  ['希望', '楽しみなことを、3つ書く', '1年後の自分に、手紙を書く', '叶えたいことの計画を立てて、人に話す'],
+  ['ひらめき', '思いついたことを、メモに5つ書く', '散歩しながら、アイデアを考える', 'ひらめいたことを形にして、人に見せる'],
+  ['感性', '好きな色・音・におい・景色を書き出す', '美術館や音楽会に行く', '感じたことを作品にして、発表する'],
+  ['ありのまま', '自分のいいところを、3つ書く', '無理に合わせずに「私はこう思う」と言ってみる', '本当に好きなことを、人前で話す']
+];
+const DATA = {};
+CARDS.forEach(([tag, ume, take, matsu]) => { DATA[tag] = { ume: [ume], take: [take], matsu: [matsu] }; });
+const CARD_COUNT = CARDS.length;
+function addOwn(word) {
+  DATA[word] = {
+    ume: ['今日、#' + word + ' を感じた瞬間を1つメモする'],
+    take: ['#' + word + ' を大事にしている人に、どうしてか話を聞く'],
+    matsu: ['#' + word + ' をテーマに、自分で小さな企画を1つやってみる'],
+    own: true
+  };
+}
+const COMBOS = [
+  { tags: ['挑戦', '勇気'], matsu: 'ずっと迷っていたことに、今週中に申し込む' },
+  { tags: ['冒険', '出会い'], matsu: '一人で知らない町のイベントに行って、地元の人と話す' },
+  { tags: ['好奇心', '学び'], take: '大学や博物館の無料講座に参加する' },
+  { tags: ['創造', '表現'], take: '作ったものをSNSや友達に見せて、感想をもらう' },
+  { tags: ['仲間', '協力'], matsu: '仲間とチームを組んで、コンテストやイベントに出る' },
+  { tags: ['家族', '感謝'], ume: '家族に「いつもありがとう」とメッセージを送る' },
+  { tags: ['地域', '貢献'], take: '地域の清掃やお祭りの手伝いに参加する' },
+  { tags: ['世界', '多様性'], matsu: '国際交流イベントや留学生との交流会に参加する' },
+  { tags: ['夢', '行動'], ume: '夢に向けて、今日5分でできることを1つやる' },
+  { tags: ['お金', '自立'], take: '1週間、使ったお金を全部記録してみる' },
+  { tags: ['友情', '冒険'], take: '友達と、行ったことのない場所へ出かける' },
+  { tags: ['健康', '継続'], take: '1週間、毎日10分歩くか体を動かす' }
+];
+const MAX = 3;
+const state = { tags: ['挑戦', '好奇心'], level: 'all', picked: null, q: '' };
+
+const chipsEl = document.getElementById('chips');
+const segEl = document.getElementById('seg');
+const listEl = document.getElementById('list');
+const countEl = document.getElementById('count');
+const toastEl = document.getElementById('toast');
+
+function results() {
+  const levels = state.level === 'all' ? ['ume', 'take', 'matsu'] : [state.level];
+  const out = [];
+  COMBOS.forEach(c => {
+    if (c.tags.every(t => state.tags.includes(t))) {
+      levels.forEach(lv => { if (c[lv]) out.push({ lv, text: c[lv], tags: c.tags, combo: true }); });
+    }
+  });
+  state.tags.forEach(t => levels.forEach(lv => DATA[t][lv].forEach(text => out.push({ lv, text, tags: [t] }))));
+  const order = { ume: 0, take: 1, matsu: 2 };
+  return out.sort((a, b) => order[a.lv] - order[b.lv] || (b.combo ? 1 : 0) - (a.combo ? 1 : 0));
+}
+
+function renderChips() {
+  chipsEl.innerHTML = '';
+  const q = state.q.trim().replace(/^#/, '');
+  const keys = Object.keys(DATA).filter(t => state.tags.includes(t) || !q || t.includes(q));
+  keys.forEach(tag => {
+    const on = state.tags.includes(tag);
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip' + (DATA[tag].own ? ' mine' : ''); b.textContent = '#' + tag;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.disabled = !on && state.tags.length >= MAX;
+    b.addEventListener('click', () => {
+      state.tags = on ? state.tags.filter(t => t !== tag) : [...state.tags, tag];
+      state.picked = null; render();
+    });
+    chipsEl.appendChild(b);
+  });
+  if (!keys.length) chipsEl.innerHTML = '<div class="count">そのカードは見つかりませんでした。別の言葉で探してみてね。</div>';
+}
+
+document.getElementById('search').addEventListener('input', e => { state.q = e.target.value; renderChips(); });
+
+function renderSeg() {
+  segEl.innerHTML = '';
+  LEVELS.forEach(l => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', state.level === l.id ? 'true' : 'false');
+    b.innerHTML = l.label + '<span>' + l.sub + '</span>';
+    b.addEventListener('click', () => { state.level = l.id; render(); });
+    segEl.appendChild(b);
+  });
+}
+
+function label(lv) { return { ume: '梅', take: '竹', matsu: '松' }[lv]; }
+
+function renderList() {
+  const items = results();
+  listEl.innerHTML = '';
+  if (!state.tags.length) {
+    countEl.textContent = '';
+    listEl.innerHTML = '<div class="empty">上のハッシュタグを1つ以上選ぶと、ここに挑戦が出てきます。</div>';
+    return;
+  }
+  countEl.textContent = items.length + '件見つかりました';
+  items.forEach(it => {
+    const key = it.lv + '|' + it.text;
+    const card = document.createElement('div');
+    card.className = 'card' + (state.picked === key ? ' picked' : '');
+    const lv = document.createElement('div');
+    lv.className = 'lv ' + it.lv; lv.textContent = label(it.lv);
+    const text = document.createElement('div');
+    text.className = 'text'; text.textContent = it.text;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const tags = document.createElement('span');
+    tags.className = 'tags';
+    tags.textContent = it.tags.map(t => '#' + t).join(' ') + (it.combo ? '（組み合わせ）' : '');
+    const pick = document.createElement('button');
+    pick.type = 'button'; pick.className = 'pick';
+    pick.textContent = state.picked === key ? 'これに決めた' : 'これにする';
+    pick.addEventListener('click', () => choose(key, it.text));
+    meta.append(tags, pick);
+    card.append(lv, text, meta);
+    listEl.appendChild(card);
+  });
+}
+
+function toast(msg) {
+  toastEl.textContent = msg; toastEl.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => { toastEl.hidden = true; }, 2200);
+}
+
+function choose(key, text) {
+  state.picked = key; renderList();
+  const done = () => toast('決まり！ワークシートに書こう');
+  try {
+    navigator.clipboard.writeText(text).then(() => toast('コピーしました。ワークシートに書こう'), done);
+  } catch (e) { done(); }
+}
+
+document.getElementById('random').addEventListener('click', () => {
+  const items = results();
+  if (!items.length) { toast('先にハッシュタグを選んでね'); return; }
+  const it = items[Math.floor(Math.random() * items.length)];
+  state.picked = it.lv + '|' + it.text; renderList();
+  toast('おまかせ：' + label(it.lv) + '「' + it.text + '」');
+});
+
+function render() { renderChips(); renderSeg(); renderList(); }
+render();
+</script>
+</body></html>
