@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}img{max-width:100%}</style></head><body>
+<title>バレエ あそびランド</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap">
+<style>
+/* A bright toy-box look for 6-8 year olds; one light look by choice, every colour set explicitly. */
+:root { --bg:#1B1636; --card:#2A2152; --ink:#FFF7EF; --muted:#C9BFE6; --line:#4B3F86; --rose:#F2C46D; --rose-d:#C8963B;
+  --on:#3E3470; --ok:#1F5A3E; --okb:#7BE0A8; --ng:#5A1F33; --sky:#3C3380; --night:#120E26; --red:#B0203A; color-scheme: dark;
+  --skin:#F4D2B4; --tights:#F7C6D2; --leo:#D9476A; --hair:#5B3524; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin:0; background: radial-gradient(120% 60% at 50% 0%, #3E3470 0%, var(--bg) 60%) fixed, var(--bg); color:var(--ink); font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Yu Gothic',sans-serif;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:12px 28px; }
+.wrap { max-width:560px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+h1 { color:#F2C46D; text-shadow:0 2px 12px rgba(242,196,109,.35); margin:0; font-size:24px; font-weight:900; text-align:center; text-wrap:balance; word-break:keep-all; line-height:1.4; }
+.sub { margin:0; text-align:center; color:var(--muted); font-size:16px; font-weight:700; word-break:keep-all; line-height:1.6; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.tile { font:inherit; color:var(--ink); background:linear-gradient(180deg,#352A66,#2A2152); border:3px solid var(--line); border-radius:22px; padding:12px 8px; min-height:124px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; box-shadow:0 5px 0 var(--line); position:relative; }
+.tile .e { font-size:44px; line-height:1; }
+.tile .t { font-size:16px; font-weight:900; line-height:1.35; text-align:center; word-break:keep-all; }
+.tile:hover { border-color:var(--rose); }
+.tile.done { border-color:var(--rose); box-shadow:0 5px 0 var(--rose-d), 0 0 18px rgba(242,196,109,.35); }
+.tile.done::after { content:'⭐'; position:absolute; top:6px; right:8px; font-size:20px; }
+.tile:active, .go:active, .opt:active { transform:translateY(3px); }
+.go { font:inherit; font-size:20px; font-weight:900; color:#2A1A10; background:var(--rose); border:0; border-radius:999px; padding:14px 30px; min-height:58px; cursor:pointer; box-shadow:0 5px 0 var(--rose-d); align-self:center; }
+.small { font:inherit; font-size:13px; font-weight:700; color:var(--muted); background:var(--card); border:1.5px solid var(--line); border-radius:999px; padding:8px 14px; min-height:40px; cursor:pointer; }
+.row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; align-items:center; }
+.top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.stage::before, .stage::after { content:''; position:absolute; top:0; bottom:0; width:9%; background:linear-gradient(90deg,#8E1A30,#C8384E 55%,#8E1A30); z-index:3; pointer-events:none; box-shadow:0 0 12px rgba(0,0,0,.4); }
+.stage::before { left:0; border-radius:22px 0 0 22px; } .stage::after { right:0; border-radius:0 22px 22px 0; }
+.stage { box-shadow: inset 0 -30px 40px rgba(0,0,0,.18), 0 0 0 3px #F2C46D55; position:relative; background:var(--sky); border-radius:22px; aspect-ratio:1/1; max-width:100%; overflow:hidden; display:grid; place-items:center; touch-action:none; user-select:none; }
+.stage.night { background:var(--night); color:#fff; }
+.big { font-size:72px; line-height:1; text-align:center; }
+.tap { font:inherit; background:none; border:0; cursor:pointer; padding:6px; font-size:64px; line-height:1; animation:pulse 1.1s infinite; filter:drop-shadow(0 0 10px rgba(242,184,75,.9)); }
+@keyframes pulse { 50% { transform:scale(1.15); } }
+.say { background:var(--card); border:2px solid var(--line); border-radius:18px; padding:12px 14px; font-size:19px; font-weight:900; line-height:1.55; text-align:center; word-break:keep-all; }
+.opts { display:grid; gap:10px; }
+.opt { font:inherit; font-size:19px; font-weight:900; color:var(--ink); background:var(--card); border:3px solid var(--line); border-radius:18px; padding:12px; min-height:62px; cursor:pointer; box-shadow:0 4px 0 var(--line); display:flex; align-items:center; justify-content:center; gap:10px; word-break:keep-all; }
+.opt.right { background:var(--ok); border-color:var(--okb); box-shadow:0 4px 0 var(--okb); }
+.opt.wrong { background:var(--ng); border-color:var(--rose); box-shadow:0 4px 0 var(--rose); }
+.pin { position:absolute; font-size:34px; transform:translate(-50%,-50%); pointer-events:none; }
+.sticker { position:absolute; font-size:44px; transform:translate(-50%,-50%); cursor:grab; touch-action:none; }
+.sw { width:46px; height:46px; border-radius:50%; border:3px solid #fff; box-shadow:0 0 0 2px var(--line); cursor:pointer; }
+.sw.sel { box-shadow:0 0 0 4px var(--rose); }
+.cam { position:relative; border-radius:18px; overflow:hidden; background:#000; aspect-ratio:4/3; max-width:100%; }
+.cam[hidden] { display:none !important; }
+.cam video, .cam canvas { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+.hold { --p:0; align-self:center; font-size:18px; font-weight:900; padding:12px 22px; border-radius:999px; color:#2A1A10;
+  background: linear-gradient(90deg, #7BE0A8 calc(var(--p) * 100%), #F2C46D calc(var(--p) * 100%)); box-shadow:0 0 0 3px #fff3; text-align:center; }
+.hold[hidden] { display:none !important; }
+.confetti { position:fixed; inset:0; pointer-events:none; z-index:50; overflow:hidden; }
+.confetti i { position:absolute; top:-20px; width:10px; height:16px; border-radius:3px; animation:fall 1.6s ease-in forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity:.9; } }
+.count { font-size:110px; font-weight:900; color:var(--rose); text-align:center; line-height:1; }
+.obs { color:#3B2620; background:#F4ECFF; border:2px dashed #B9A3E0; border-radius:16px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+.obs b { font-size:13px; color:#6B5A8C; }
+.obs .row button { font:inherit; font-size:15px; font-weight:900; background:#fff; border:2px solid #D8CBF0; border-radius:14px; padding:8px 10px; min-height:46px; cursor:pointer; color:var(--ink); }
+.obs .row button.sel { background:#6B5A8C; color:#fff; border-color:#6B5A8C; }
+table { width:100%; border-collapse:collapse; background:var(--card); font-size:14px; }
+.tw { overflow-x:auto; border-radius:14px; }
+th, td { padding:9px 7px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
+td.n, th.n { text-align:right; }
+.note { font-size:12px; color:var(--muted); text-align:center; line-height:1.6; }
+.card { background:var(--card); border:2px solid var(--line); border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:8px; align-items:center; text-align:center; }
+.card .e { font-size:54px; }
+.card p { margin:0; font-size:18px; font-weight:900; line-height:1.6; word-break:keep-all; }
+button:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(function () {
+'use strict';
+const app = document.getElementById('app');
+const REDUCE = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const h = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; };
+const btn = (cls, txt, fn) => { const b = h('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); return b; };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+function say(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ja-JP'; u.rate = .95; u.pitch = 1.15; speechSynthesis.speak(u); } catch (e) {} }
+
+/* ---------- sound (small synth; all tunes are original placeholders) ---------- */
+let ac = null;
+function audio() { if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (ac && ac.state === 'suspended') ac.resume(); return ac; }
+function tone(f, t, d, type, v) {
+  const a = audio(); if (!a) return; const o = a.createOscillator(), g = a.createGain(), s = a.currentTime + (t || 0);
+  o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(v || .12, s + .01); g.gain.exponentialRampToValueAtTime(.0001, s + (d || .3));
+  o.connect(g).connect(a.destination); o.start(s); o.stop(s + (d || .3) + .05);
+}
+function noise(t, d, v) { const a = audio(); if (!a) return; const n = a.sampleRate * d, b = a.createBuffer(1, n, a.sampleRate), x = b.getChannelData(0); for (let i = 0; i < n; i++) x[i] = (Math.random() * 2 - 1) * (1 - i / n); const s = a.createBufferSource(), g = a.createGain(); s.buffer = b; g.gain.value = v || .2; s.connect(g).connect(a.destination); s.start(a.currentTime + t); }
+const sfx = {
+  pop: () => { tone(660, 0, .12, 'triangle', .12); tone(990, .05, .15, 'triangle', .08); },
+  yay: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .09, .3, 'triangle', .1)),
+  no: () => { tone(330, 0, .2, 'square', .05); tone(262, .15, .3, 'square', .05); },
+  beep: () => tone(880, 0, .12, 'sine', .1),
+  bell: (f) => { tone(f, 0, 1.2, 'sine', .12); tone(f * 2, 0, .7, 'sine', .05); tone(f * 3, 0, .35, 'sine', .03); }
+};
+const INST = {
+  celesta: () => [1319, 1568, 1319, 1175, 1047].forEach((f, i) => setTimeout(() => sfx.bell(f), i * 220)),
+  harp: () => [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone(f, i * .08, .9, 'triangle', .08)),
+  trumpet: () => [523, 523, 659, 784].forEach((f, i) => { tone(f, i * .25, .22, 'sawtooth', .05); tone(f, i * .25, .22, 'square', .025); }),
+  drum: () => [0, .3, .45, .6].forEach(t => { tone(90, t, .3, 'sine', .25); noise(t, .08, .06); }),
+  castanet: () => [0, .12, .24, .48, .6].forEach(t => { tone(2600, t, .03, 'square', .06); noise(t, .03, .12); })
+};
+const TUNES = {
+  spain: () => { INST.castanet(); [440, 523, 494, 440, 415, 440].forEach((f, i) => tone(f, .2 + i * .22, .2, 'triangle', .1)); },
+  arabia: () => [294, 311, 370, 392, 370, 311, 294].forEach((f, i) => tone(f, i * .35, .45, 'triangle', .09)),
+  china: () => [784, 880, 1047, 1175, 1047, 880].forEach((f, i) => setTimeout(() => sfx.bell(f), i * 180)),
+  russia: () => [392, 392, 440, 494, 523, 494, 440, 392, 523, 587].forEach((f, i) => tone(f, i * .13, .12, 'square', .05))
+};
+
+function confetti() {
+  if (REDUCE) return;
+  const c = h('div', 'confetti'); const cols = ['#F2C46D', '#F29BB7', '#8FB7F2', '#7BE0A8', '#fff'];
+  for (let i = 0; i < 40; i++) { const p = document.createElement('i'); p.style.left = Math.random() * 100 + '%'; p.style.background = cols[i % 5]; p.style.animationDelay = Math.random() * .4 + 's'; p.style.animationDuration = 1.2 + Math.random() * .9 + 's'; c.appendChild(p); }
+  document.body.appendChild(c); setTimeout(() => c.remove(), 2600);
+}
+/* ---------- the dancer figure (shared with the ballet quiz) ---------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const rad = d => d * Math.PI / 180;
+const dir = (a, len) => [Math.sin(rad(a)) * len, Math.cos(rad(a)) * len];
+const L = { thigh: 40, shin: 40, up: 26, fore: 24, torso: 44 };
+const BASE = { x: 0, y: 0, lean: 0, sx: 1, lT: 0, lS: 0, lF: -92, rT: 0, rS: 0, rF: 92, lU: -12, lA: 25, rU: 12, rA: -25, side: 0 };
+function figure(p) {
+  p = Object.assign({}, BASE, p);
+  const H = [100 + p.x, 128 + p.y];
+  const td = dir(180 + p.lean, L.torso);
+  const S = [H[0] + td[0], H[1] + td[1]];
+  const hd = dir(180 + p.lean, 15);
+  const head = [S[0] + hd[0], S[1] + hd[1]];
+  const side = p.side; /* 1 = seen from the side (facing right) */
+  const hipOff = side ? 2 : 7, shOff = side ? 2 : 11;
+  const lHip = [H[0] - hipOff, H[1]], rHip = [H[0] + hipOff, H[1]];
+  const lSh = [S[0] - shOff, S[1] + 3], rSh = [S[0] + shOff, S[1] + 3];
+  const chain = (o, a1, l1, a2, l2) => { const d1 = dir(a1, l1), m = [o[0] + d1[0], o[1] + d1[1]]; const d2 = dir(a2, l2), e = [m[0] + d2[0], m[1] + d2[1]]; return [o, m, e]; };
+  const lLeg = chain(lHip, p.lT, L.thigh, p.lS, L.shin), rLeg = chain(rHip, p.rT, L.thigh, p.rS, L.shin);
+  const lArm = chain(lSh, p.lU, L.up, p.lA, L.fore), rArm = chain(rSh, p.rU, L.up, p.rA, L.fore);
+  const foot = (ank, a) => { const d = dir(a, 12); return [ank, [ank[0] + d[0], ank[1] + d[1]]]; };
+  const pl = pts => pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
+  const limb = (pts, col, w, op) => `<polyline points="${pl(pts)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${op ? ` opacity="${op}"` : ''}/>`;
+  /* in side view the left limbs are behind: draw them paler */
+  const back = side ? .55 : 1;
+  const tutuTilt = side ? -p.lean * .6 : 0;
+  const bun = side ? [head[0] - 10, head[1] - 2] : [head[0], head[1] - 12];
+  return `<g transform="translate(${100 + p.x} 0) scale(${p.sx} 1) translate(${-(100 + p.x)} 0)">
+    <ellipse cx="${H[0]}" cy="212" rx="${34 + p.y * .25}" ry="6" fill="#3B2620" opacity=".08"/>
+    ${limb(lArm, 'var(--skin)', 6.5, back)}
+    ${limb(lLeg.concat([foot(lLeg[2], p.lF)[1]]), 'var(--tights)', 8, back)}
+    ${limb(rLeg.concat([foot(rLeg[2], p.rF)[1]]), 'var(--tights)', 8)}
+    ${limb([H, S], 'var(--leo)', 20)}
+    <ellipse cx="${H[0]}" cy="${H[1] - 2}" rx="${side ? 24 : 30}" ry="6.5" fill="#FBE3EA" stroke="#F0B9C8" stroke-width="1.5" transform="rotate(${tutuTilt} ${H[0]} ${H[1]})"/>
+    <line x1="${S[0]}" y1="${S[1]}" x2="${head[0]}" y2="${head[1]}" stroke="var(--skin)" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="${bun[0]}" cy="${bun[1]}" r="6" fill="var(--hair)"/>
+    <circle cx="${head[0]}" cy="${head[1]}" r="11" fill="var(--skin)"/>
+    <path d="M ${head[0] - 11} ${head[1] - 1} A 11 11 0 0 1 ${head[0] + 11} ${head[1] - 1} Q ${head[0]} ${head[1] - 6} ${head[0] - 11} ${head[1] - 1} Z" fill="var(--hair)"/>
+    ${limb(rArm, 'var(--skin)', 6.5)}
+  </g>`;
+}
+/* ---------- feet seen from above ---------- */
+const FOOT = 'M -8 0 C -10 -14 -12 -30 -12 -44 C -12 -60 14 -62 14 -46 C 14 -32 11 -14 8 0 C 5 7 -5 7 -8 0 Z';
+function feet(n) {
+  /* [heelX, heelY, rotation] for back/left foot and front/right foot; rotation 90 = toes to the right */
+  const F = {
+    1: [[96, 112, -86], [104, 112, 86]],
+    2: [[66, 112, -86], [134, 112, 86]],
+    3: [[132, 98, -86], [100, 120, 86]],
+    4: [[134, 76, -86], [66, 136, 86]],
+    5: [[134, 98, -86], [66, 120, 86]]
+  }[n];
+  const toes = [[-8, -52, 3.4], [-3, -56, 3.6], [2.5, -56, 3.4], [7, -53, 3.1], [10.5, -49, 2.7]].map(([tx, ty, r]) => `<circle cx="${tx}" cy="${ty}" r="${r}" fill="#fff" opacity=".7"/>`).join('');
+  const f = ([x, y, r], col) => `<g transform="translate(${x} ${y}) rotate(${r})"><path d="${FOOT}" fill="${col}" stroke="#B9788A" stroke-width="2"/>${toes}</g>`;
+  return `<rect x="0" y="0" width="200" height="200" fill="#FFF8F2"/>
+    <text x="100" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#8A6A5C">うえから みた あし</text>
+    <g transform="translate(100 106) scale(1.35) translate(-100 -106)">${f(F[0], '#F7C6D2')}${f(F[1], '#F2A9BC')}</g>
+    <text x="100" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#8A6A5C">▼ まえ（おきゃくさん）</text>`;
+}
+
+/* ---------- poses ---------- */
+const P = {
+  bas: {},
+  avant: { lU: -60, lA: 95, rU: 60, rA: -95 },
+  seconde: { lU: -76, lA: -86, rU: 76, rA: 86 },
+  haut: { lU: -150, lA: 150, rU: 150, rA: -150 },
+  plie: { y: 15, lT: -35, lS: 35, rT: 35, rS: -35, lU: -76, lA: -86, rU: 76, rA: 86 },
+  releve: { y: -11, lF: -14, rF: 14, lU: -150, lA: 150, rU: 150, rA: -150 },
+  /* side view (facing right) */
+  sStand: { side: 1, lF: 90, rF: 90, lU: -8, lA: 10, rU: 8, rA: 20, lT: 0, rT: 0 },
+  tendu: { side: 1, lF: 90, rT: 25, rS: 25, rF: 42, lU: -80, lA: -88, rU: 60, rA: 80 },
+  passe: { y: -4, lT: 0, lS: 0, lF: -30, rT: 60, rS: -66, rF: -66, lU: -60, lA: 95, rU: 60, rA: -95 },
+  arab: { side: 1, lean: -12, lF: 90, rT: -92, rS: -92, rF: -96, lU: 122, lA: 112, rU: -98, rA: -96 },
+  att: { side: 1, lean: -8, lF: 90, rT: -128, rS: -72, rF: -66, lU: -96, lA: -90, rU: 168, rA: 150 },
+  jeteUp: { side: 1, y: -46, lean: -8, lT: -86, lS: -88, lF: -92, rT: 86, rS: 88, rF: 92, lU: -110, lA: -106, rU: 128, rA: 120 },
+  jeteRun: { side: 1, y: 0, lT: -20, lS: 10, lF: 70, rT: 24, rS: 10, rF: 92, lU: -40, lA: -30, rU: 40, rA: 60 }
+};
+const mix = (a, b, t) => { const o = {}; const A = Object.assign({}, BASE, a), B = Object.assign({}, BASE, b); for (const k in BASE) o[k] = A[k] + (B[k] - A[k]) * t; o.side = B.side || A.side; return o; };
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+/* motions: a function of time (seconds) -> pose */
+const MOTION = {
+  plie: t => mix(P.seconde, P.plie, ease(.5 - .5 * Math.cos(t * 2.2))),
+  releve: t => mix(P.haut, P.releve, ease(.5 - .5 * Math.cos(t * 2.2))),
+  tendu: t => mix(P.sStand, P.tendu, ease(.5 - .5 * Math.cos(t * 2.4))),
+  passe: t => mix(P.avant, P.passe, ease(.5 - .5 * Math.cos(t * 2))),
+  arab: t => mix(P.sStand, P.arab, ease(Math.min(1, (t % 4) / 1.2))),
+  att: t => mix(P.sStand, P.att, ease(Math.min(1, (t % 4) / 1.2))),
+  jete: t => { const c = (t % 2.4) / 2.4; const air = Math.sin(Math.min(1, Math.max(0, (c - .25) / .5)) * Math.PI); const o = mix(P.jeteRun, P.jeteUp, air); o.x = -40 + c * 80; return o; },
+  pirouette: t => { const o = mix(P.passe, P.passe, 0); o.y = -6; o.sx = Math.cos(t * 3.4); return o; },
+  bas: () => mix(P.bas, P.bas, 0), avant: () => mix(P.avant, P.avant, 0), seconde: () => mix(P.seconde, P.seconde, 0), haut: () => mix(P.haut, P.haut, 0)
+};
+
+
+function dancer(motion) {
+  const s = document.createElementNS(SVGNS, 'svg'); s.setAttribute('viewBox', '-10 0 220 225'); s.style.width = '100%'; s.style.height = '100%';
+  s.innerHTML = '<line x1="10" y1="214" x2="190" y2="214" stroke="#D7B69C" stroke-width="2"/><g class="fig"></g>';
+  const g = s.querySelector('.fig'), t0 = performance.now();
+  const loop = now => { if (!g.isConnected) return; g.innerHTML = figure(MOTION[motion](REDUCE ? 1.3 : (now - t0) / 1000)); requestAnimationFrame(loop); };
+  g.innerHTML = figure(MOTION[motion](1.3)); requestAnimationFrame(loop);
+  return s;
+}
+
+/* ---------- records (this phone only, no names) ---------- */
+const KEY = 'asobi-land-v1';
+let rec = { plays: [], firsts: [] };
+try { rec = JSON.parse(localStorage.getItem(KEY)) || rec; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) {} };
+let child = { n: 1, first: null, done: new Set() };
+
+/* ---------- the eight games ---------- */
+const GAMES = [
+  ['story', '📖', 'ものがたりに はいる', '💂'],
+  ['world', '🍫', 'おかしの くにで せかい りょこう', '🗺️'],
+  ['xmas', '🎄', 'せかいの クリスマス', '🎄'],
+  ['music', '🎻', 'がっきを さわって おとを ならす', '🔔'],
+  ['dress', '👗', 'きせかえ・ぬりえ', '👗'],
+  ['move', '🩰', 'まねっこ ポーズで からだを うごかす', '🩰'],
+  ['quiz', '❓', 'クイズ・あてっこ', '💡'],
+  ['collect', '⭐', 'シールを あつめて はる', '⭐']
+];
+const G = Object.fromEntries(GAMES.map(g => [g[0], g]));
+let cur = null;
+
+function hub() {
+  cur = null; try { speechSynthesis.cancel(); } catch (e) {}
+  app.innerHTML = '';
+  app.appendChild(h('h1', '', '🩰 バレエ あそびランド'));
+  app.appendChild(h('p', 'sub', 'あそびたい ものを えらんでね'));
+  const g = h('div', 'grid');
+  GAMES.forEach(([k, e, t]) => {
+    const b = btn('tile' + (child.done.has(k) ? ' done' : ''), '', () => open(k));
+    b.appendChild(h('span', 'e', e)); b.appendChild(h('span', 't', t)); g.appendChild(b);
+  });
+  app.appendChild(g);
+  const r = h('div', 'row');
+  r.appendChild(btn('small', 'つぎの子へ（花用）', () => { child = { n: child.n + 1, first: null, done: new Set() }; hub(); }));
+  r.appendChild(btn('small', 'けっか（花用）', results));
+  app.appendChild(r);
+  app.appendChild(h('p', 'note', 'いま ' + child.n + '人め'));
+}
+function open(k) {
+  audio(); sfx.pop();
+  if (!child.first) { child.first = k; rec.firsts.push(k); save(); }
+  cur = { k, t0: Date.now() };
+  app.innerHTML = '';
+  const top = h('div', 'top');
+  top.appendChild(btn('small', '← もどる', () => end(false)));
+  top.appendChild(h('div', '', G[k][1] + ' ' + G[k][2]));
+  app.appendChild(top);
+  const area = h('div', 'wrap'); area.style.width = '100%'; app.appendChild(area);
+  PLAY[k](area, () => end(true));
+}
+/* after a game: a star for the child, then a small panel for Hana to note how it went */
+function end(finished) {
+  if (!cur) return; const k = cur.k, secs = Math.round((Date.now() - cur.t0) / 1000); cur = null;
+  try { speechSynthesis.cancel(); } catch (e) {}
+  const play = { k, secs, finished, mood: 0, again: false, child: child.n };
+  rec.plays.push(play); save();
+  if (finished) child.done.add(k);
+  app.innerHTML = '';
+  if (finished) {
+    sfx.yay(); confetti(); say('できた！ シールを ゲット！');
+    const c = h('div', 'card'); c.appendChild(h('div', 'e', G[k][3])); c.appendChild(h('p', '', 'できた！ シールを ゲット！')); app.appendChild(c);
+  }
+  const o = h('div', 'obs');
+  o.appendChild(h('b', '', '花用メモ：' + G[k][2] + '（' + secs + '秒' + (finished ? '' : '・途中でやめた') + '）'));
+  const moods = h('div', 'row');
+  [['😐 ふつう', 1], ['🙂 たのしそう', 2], ['🤩 すごく もりあがった', 3]].forEach(([t, v]) => {
+    const b = btn('', t, () => { play.mood = v; save(); [...moods.children].forEach(x => x.classList.remove('sel')); b.classList.add('sel'); });
+    moods.appendChild(b);
+  });
+  o.appendChild(moods);
+  const again = h('div', 'row');
+  const ab = btn('', '「もう1回」と言った', () => { play.again = !play.again; save(); ab.classList.toggle('sel', play.again); });
+  again.appendChild(ab); o.appendChild(again);
+  app.appendChild(o);
+  const r = h('div', 'row');
+  r.appendChild(btn('small', 'もう1回 あそぶ', () => open(k)));
+  app.appendChild(r);
+  app.appendChild(btn('go', 'ほかの あそびへ ▶', hub));
+}
+function results() {
+  app.innerHTML = '';
+  app.appendChild(h('h1', '', 'けっか'));
+  const kids = new Set(rec.plays.map(p => p.child)).size;
+  app.appendChild(h('p', 'sub', 'あそんだ回数：' + rec.plays.length + '回'));
+  const tw = h('div', 'tw'), tb = h('table'); tw.appendChild(tb);
+  const hd = h('tr'); ['あそび', '回数', 'さいごまで', '🤩', 'もりあがり平均', 'もう1回', '平均秒', '最初にえらんだ'].forEach((x, i) => hd.appendChild(h('th', i ? 'n' : '', x))); tb.appendChild(hd);
+  const rows = GAMES.map(([k, e, t]) => {
+    const ps = rec.plays.filter(p => p.k === k), rated = ps.filter(p => p.mood);
+    return { k, label: e + ' ' + t, n: ps.length, fin: ps.filter(p => p.finished).length, wow: ps.filter(p => p.mood === 3).length,
+      avg: rated.length ? (rated.reduce((a, p) => a + p.mood, 0) / rated.length) : 0, again: ps.filter(p => p.again).length,
+      secs: ps.length ? Math.round(ps.reduce((a, p) => a + p.secs, 0) / ps.length) : 0, first: rec.firsts.filter(f => f === k).length };
+  }).sort((a, b) => b.avg - a.avg || b.wow - a.wow);
+  rows.forEach(r => { const tr = h('tr'); [r.label, r.n, r.fin, r.wow, r.avg ? r.avg.toFixed(1) : '-', r.again, r.secs, r.first].forEach((x, i) => tr.appendChild(h('td', i ? 'n' : '', String(x)))); tb.appendChild(tr); });
+  app.appendChild(tw);
+  app.appendChild(h('p', 'note', 'もりあがり：😐=1 🙂=2 🤩=3 の平均。名前は記録していません。結果はこのスマホの中だけに保存されます。'));
+  const r = h('div', 'row');
+  r.appendChild(btn('small', 'もどる', hub));
+  const clr = btn('small', '結果をけす', () => { if (clr.dataset.sure) { rec = { plays: [], firsts: [] }; save(); child = { n: 1, first: null, done: new Set() }; results(); } else { clr.dataset.sure = '1'; clr.textContent = 'ほんとうに けす？（もう一度おす）'; } });
+  r.appendChild(clr); app.appendChild(r);
+}
+
+/* ---------- 1. story: tap the glowing thing to move on ---------- */
+const PLAY = {};
+PLAY.story = async (area, done) => {
+  const st = h('div', 'stage'), line = h('div', 'say'); area.append(st, line);
+  const scene = (bg, night, text, items, tapIdx) => new Promise(res => {
+    st.className = 'stage' + (night ? ' night' : ''); st.innerHTML = '';
+    const box = h('div', ''); box.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;font-size:60px;padding:16px;';
+    if (bg) { const b = h('div', ''); b.textContent = bg; b.style.cssText = 'position:absolute;top:10px;left:12px;font-size:40px;opacity:.9'; st.appendChild(b); }
+    let left = tapIdx.length;
+    items.forEach((e, i) => {
+      if (tapIdx.includes(i)) { const t = btn('tap', e, () => { sfx.pop(); t.style.visibility = 'hidden'; if (--left === 0) res(); }); box.appendChild(t); }
+      else box.appendChild(h('span', '', e));
+    });
+    st.appendChild(box); line.textContent = text; say(text);
+  });
+  await scene('🎄', false, 'クリスマス・イブ。クララの いえで パーティー！ ひかっている プレゼントを タップしてね', ['👧', '🎁', '🧙‍♂️'], [1]);
+  await scene('🎄', false, 'へいたいの かたちの「くるみわりにんぎょう」を もらったよ！ にんぎょうに さわってみて', ['👧', '💂'], [1]);
+  await scene('🕛', true, 'よなかの 12じ。ねずみが いっぱい でてきた！ ねずみを ぜんぶ タップして おいはらおう', ['💂', '🐭', '🐭', '🐭', '🐀'], [1, 2, 3, 4]);
+  await scene('✨', true, 'やった！ くるみわりにんぎょうが おうじさまに かわったよ。おうじさまに さわってみて', ['👧', '🤴'], [1]);
+  await scene('❄️', true, 'ゆきの くにを とおって、おかしの くにへ。ひかっている おかしを タップしてね', ['❄️', '⛄', '🍬'], [2]);
+  await scene('🍭', false, 'こんぺいとうの せいが、おどって むかえて くれたよ！ せいに さわってみて', ['🍫', '🧚', '🍰'], [1]);
+  INST.celesta(); line.textContent = 'おしまい！'; await wait(1500); done();
+};
+
+/* ---------- 2. world trip: four sweets, four dances ---------- */
+PLAY.world = (area, done) => {
+  const SW = [
+    ['🍫', 'チョコレートの おどり', 'スペイン', 'spain', 28, 40],
+    ['☕', 'コーヒーの おどり', 'アラビア', 'arabia', 58, 52],
+    ['🍵', 'おちゃの おどり', 'ちゅうごく', 'china', 78, 42],
+    ['🍭', 'ぼうあめの おどり（トレパック）', 'ロシア', 'russia', 62, 22]
+  ];
+  const line = h('div', 'say', 'おかしの くにでは、せかいの おかしが おどるよ。おかしを タップしてね'); say(line.textContent);
+  const st = h('div', 'stage'); st.style.background = '#CFE8F7';
+  st.innerHTML = '<svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%"><path d="M8 30 Q20 12 40 18 T70 14 Q92 20 94 40 Q90 60 72 66 Q60 80 40 74 Q18 76 10 58 Z" fill="#BFE3B0"/><text x="50" y="94" font-size="5" text-anchor="middle" fill="#5B7A55">せかいちず（だいたいの いち）</text></svg>';
+  const opts = h('div', 'grid'); let left = SW.length;
+  SW.forEach(([e, name, land, tune, x, y]) => {
+    const b = btn('tile', '', () => {
+      if (b.disabled) return; b.disabled = true; b.classList.add('done'); TUNES[tune]();
+      const t = name + 'は、' + land + 'の おどり！'; line.textContent = t; say(t);
+      const p = h('div', 'pin', e); p.style.left = x + '%'; p.style.top = y + '%'; st.appendChild(p);
+      const l = h('div', 'pin', land); l.style.cssText += `left:${x}%;top:${y + 9}%;font-size:12px;font-weight:900;background:#fff;color:#3B2620;padding:2px 6px;border-radius:8px;`; st.appendChild(l);
+      if (--left === 0) setTimeout(done, 2600);
+    });
+    b.appendChild(h('span', 'e', e)); b.appendChild(h('span', 't', name)); opts.appendChild(b);
+  });
+  area.append(line, st, opts);
+};
+
+/* ---------- 3. Christmas around the world ---------- */
+PLAY.xmas = (area, done) => {
+  const C = [
+    ['🇯🇵', 'にほん', 'ケーキや チキンを たべる いえが おおいよ。'],
+    ['🇪🇸', 'スペイン', '1がつ6にちに「3にんの はかせ」が プレゼントを くれるよ。'],
+    ['🇦🇺', 'オーストラリア', 'クリスマスは なつ！ うみで すごす ひとも いるよ。'],
+    ['🇫🇮', 'フィンランド', 'サンタクロースの むらが あるよ。'],
+    ['🇩🇪', 'ドイツ', 'アドベントカレンダーで、まいにち クリスマスを まつよ。']
+  ];
+  const line = h('div', 'say', 'ツリーの かざりを タップしてね。せかいの クリスマスが わかるよ'); say(line.textContent);
+  const st = h('div', 'stage'); st.style.background = '#E7F3EA';
+  const tree = h('div', 'big', '🎄'); tree.style.fontSize = '220px'; st.appendChild(tree);
+  const pos = [[50, 28], [36, 48], [64, 50], [30, 68], [70, 70]];
+  let left = C.length;
+  C.forEach((c, i) => {
+    const b = btn('tap', '🔴', () => {
+      if (b.dataset.on) return; b.dataset.on = 1; b.textContent = c[0]; b.style.animation = 'none'; sfx.bell(880 + i * 110);
+      const t = c[1] + '：' + c[2]; line.textContent = t; say(t);
+      if (--left === 0) setTimeout(done, 3500);
+    });
+    b.style.cssText = `position:absolute;left:${pos[i][0]}%;top:${pos[i][1]}%;transform:translate(-50%,-50%);font-size:34px;`;
+    st.appendChild(b);
+  });
+  area.append(line, st);
+};
+
+/* ---------- 4. instruments ---------- */
+PLAY.music = (area, done) => {
+  const I = [['celesta', '🔔', 'チェレスタ'], ['harp', '🎶', 'ハープ'], ['trumpet', '🎺', 'トランペット'], ['drum', '🥁', 'たいこ'], ['castanet', '👏', 'カスタネット']];
+  const line = h('div', 'say', 'がっきを タップして、おとを ならしてみよう！'); say(line.textContent);
+  const g = h('div', 'grid'); const tried = new Set();
+  I.forEach(([k, e, n]) => { const b = btn('tile', '', () => { INST[k](); tried.add(k); line.textContent = n + 'の おと！'; if (tried.size >= 3 && !quizShown) showQuiz(); }); b.appendChild(h('span', 'e', e)); b.appendChild(h('span', 't', n)); g.appendChild(b); });
+  area.append(line, g);
+  let quizShown = false;
+  function showQuiz() {
+    quizShown = true;
+    const q = h('div', 'say', 'もんだい！ こんぺいとうの せいの おどりで、キラキラ なる がっきは どれ？');
+    const replay = btn('small', '♪ キラキラの おとを きく', () => INST.celesta());
+    const o = h('div', 'opts');
+    [['harp', 'ハープ'], ['celesta', 'チェレスタ'], ['drum', 'たいこ']].forEach(([k, n]) => {
+      const b = btn('opt', n, () => {
+        if (k === 'celesta') { b.classList.add('right'); sfx.yay(); const t = 'せいかい！ チャイコフスキーは、この おどりに チェレスタを つかったんだ。'; q.textContent = t; say(t); setTimeout(done, 4200); }
+        else { b.classList.add('wrong'); sfx.no(); say('おしい！ もう いちど きいてみて'); }
+      });
+      o.appendChild(b);
+    });
+    area.append(q, replay, o); say(q.textContent); setTimeout(() => INST.celesta(), 2600);
+    q.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+};
+
+/* ---------- 5. dress-up and colouring ---------- */
+PLAY.dress = (area, done) => {
+  const COL = ['#F29BB7', '#FFFFFF', '#8FB7F2', '#C8384E', '#B99BF2', '#F2C46D', '#7BC8A4', '#1E1E2E'];
+  let pick = COL[0];
+  const line = h('div', 'say', 'いろを えらんで、ドレスや ティアラを タップして ぬってね'); say(line.textContent);
+  const st = h('div', 'stage'); st.style.background = '#FFF8F2';
+  st.innerHTML = `<svg viewBox="0 0 200 220" style="width:88%;height:88%">
+    <circle cx="100" cy="40" r="20" fill="#F4D2B4"/><path d="M80 36 Q100 10 120 36 Q100 26 80 36Z" fill="#5B3524"/><circle cx="100" cy="18" r="9" fill="#5B3524"/>
+    <path data-part="tiara" d="M84 22 L90 10 L96 20 L100 6 L104 20 L110 10 L116 22 Z" fill="#EEE" stroke="#999"/>
+    <path data-part="body" d="M86 62 Q100 56 114 62 L110 104 L90 104 Z" fill="#EEE" stroke="#999"/>
+    <rect x="72" y="62" width="9" height="46" rx="4" fill="#F4D2B4" transform="rotate(20 76 62)"/><rect x="119" y="62" width="9" height="46" rx="4" fill="#F4D2B4" transform="rotate(-20 124 62)"/>
+    <ellipse data-part="tutu" cx="100" cy="108" rx="62" ry="16" fill="#EEE" stroke="#999"/>
+    <rect x="89" y="118" width="9" height="78" rx="4" fill="#F7C6D2"/><rect x="102" y="118" width="9" height="78" rx="4" fill="#F7C6D2"/>
+    <ellipse data-part="shoes" cx="92" cy="200" rx="9" ry="6" fill="#EEE" stroke="#999"/><ellipse data-part="shoes" cx="108" cy="200" rx="9" ry="6" fill="#EEE" stroke="#999"/></svg>`;
+  const painted = new Set();
+  st.querySelectorAll('[data-part]').forEach(p => { p.style.cursor = 'pointer'; p.addEventListener('click', () => {
+    const part = p.dataset.part; st.querySelectorAll(`[data-part="${part}"]`).forEach(x => x.setAttribute('fill', pick)); sfx.pop(); painted.add(part);
+    if (painted.size >= 3) fin.hidden = false; }); });
+  const sws = h('div', 'row');
+  COL.forEach((c, i) => { const s = btn('sw' + (i ? '' : ' sel'), '', () => { pick = c; sws.querySelectorAll('.sw').forEach(x => x.classList.remove('sel')); s.classList.add('sel'); }); s.style.background = c; s.setAttribute('aria-label', 'いろ ' + (i + 1)); sws.appendChild(s); });
+  const deco = btn('small', '✨ キラキラを つける', () => { const p = h('div', 'pin', '✨'); p.style.left = (20 + Math.random() * 60) + '%'; p.style.top = (20 + Math.random() * 60) + '%'; st.appendChild(p); sfx.bell(1568); });
+  const fin = btn('go', 'できた！ ▶', done); fin.hidden = true;
+  area.append(line, st, sws, deco, fin);
+};
+
+/* ---------- 6. copy the pose with your body ---------- */
+PLAY.move = async (area, done) => {
+  /* pose name, illustration, how-to, and a check on body landmarks (MediaPipe numbering) */
+  const POSES = [
+    ['haut', 'アン・オー', 'りょううでを あたまの うえで まるく しよう！', lm => lm[15].y < lm[0].y && lm[16].y < lm[0].y, [0, 15, 16]],
+    ['plie', 'プリエ', 'ひざを そとに ひらいて、ゆっくり まげよう！', lm => kneeAng(lm, 23, 25, 27) < 155 && kneeAng(lm, 24, 26, 28) < 155, [23, 24, 25, 26, 27, 28]],
+    ['passe', 'パッセ', 'かたあしの つまさきを、もう かたほうの ひざに つけよう！', lm => passe(lm, 27, 26, 28) || passe(lm, 28, 25, 27), [25, 26, 27, 28]],
+    ['arab', 'アラベスク', 'かたあしで たって、もう かたほうの あしを うしろに たかく のばそう！', lm => arab(lm, 27, 28, 26) || arab(lm, 28, 27, 25), [23, 24, 25, 26, 27, 28]]
+  ];
+  const line = h('div', 'say'), st = h('div', 'stage'), cnt = h('div', 'count'); st.style.background = '#FFF8F2';
+  const camBox = h('div', 'cam'); const video = document.createElement('video'); video.playsInline = true; video.muted = true; video.autoplay = true;
+  const cv = document.createElement('canvas'); camBox.append(video, cv);
+  const ring = h('div', 'hold'); ring.hidden = true; const camNote = h('p', 'note', 'カメラの えいぞうは ほぞんしないよ。この スマホの なかだけで うごきを みています。');
+  area.append(line, st, camBox, ring, cnt);
+  camBox.hidden = true;
+  const pose = await startPose(video);       /* null when the camera or the model is not available here */
+  if (pose) { camBox.hidden = false; area.insertBefore(camNote, cnt); }
+  for (const [m, name, how, check, need] of POSES) {
+    if (!cnt.isConnected) break;
+    st.innerHTML = ''; st.appendChild(dancer(m)); cnt.textContent = '';
+    const t = name + '。' + how; line.textContent = t; say(t);
+    if (pose) {
+      /* hold the pose for 1.5 seconds, the camera decides */
+      const ok = await watchPose(pose, video, cv, ring, line, check, need, t);
+      ring.hidden = true;
+      if (!cnt.isConnected) break;
+      const praise = ok ? ['すごい！ できたね！', 'きれいな ポーズ！', 'ばっちり！ バレリーナみたい！'][Math.floor(Math.random() * 3)] : 'がんばったね！ つぎに いこう';
+      cnt.textContent = ok ? '⭐' : '👍'; line.textContent = praise; say(praise); if (ok) { sfx.yay(); confetti(); }
+      await wait(2200);
+    } else {
+      await wait(4200);
+      say('10びょう キープ！');
+      for (let i = 10; i >= 1; i--) { cnt.textContent = i; sfx.beep(); await wait(1000); if (!cnt.isConnected) break; }
+      if (!cnt.isConnected) break;
+      cnt.textContent = '⭐'; sfx.yay(); confetti(); await wait(900);
+    }
+  }
+  stopPose(video);
+  if (cnt.isConnected) done();
+};
+
+/* ---------- camera pose recognition (MediaPipe Pose Landmarker, runs on the device) ---------- */
+let landmarker = null, poseTried = false;
+const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+async function startPose(video) {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return null;
+  try {
+    const stream = await Promise.race([navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false }), wait(8000).then(() => null)]);
+    if (!stream) return null;
+    video.srcObject = stream; await video.play().catch(() => {});
+    if (!landmarker && !poseTried) {
+      poseTried = true;
+      let vision = null;
+      for (const u of [MP + '/vision_bundle.mjs', MP + '/+esm']) { try { vision = await import(u); break; } catch (e) {} }
+      if (!vision) throw new Error('no vision');
+      const files = await vision.FilesetResolver.forVisionTasks(MP + '/wasm');
+      landmarker = await Promise.race([vision.PoseLandmarker.createFromOptions(files, {
+        baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task', delegate: 'GPU' },
+        runningMode: 'VIDEO', numPoses: 1 }), wait(15000).then(() => null)]);
+    }
+    if (!landmarker) { stopPose(video); return null; }
+    return landmarker;
+  } catch (e) { stopPose(video); return null; }
+}
+function stopPose(video) { try { (video.srcObject && video.srcObject.getTracks() || []).forEach(t => t.stop()); video.srcObject = null; } catch (e) {} }
+const kneeAng = (lm, a, b, c) => { const A = lm[a], B = lm[b], C = lm[c]; const v1 = [A.x - B.x, A.y - B.y], v2 = [C.x - B.x, C.y - B.y]; const d = Math.hypot(...v1) * Math.hypot(...v2) || 1; return Math.acos(Math.max(-1, Math.min(1, (v1[0] * v2[0] + v1[1] * v2[1]) / d))) * 180 / Math.PI; };
+const legLen = lm => (Math.hypot(lm[23].x - lm[27].x, lm[23].y - lm[27].y) + Math.hypot(lm[24].x - lm[28].x, lm[24].y - lm[28].y)) / 2 || .3;
+/* passé: the lifted foot is up near the other knee */
+const passe = (lm, foot, otherKnee, otherFoot) => { const L = legLen(lm); return lm[foot].y < lm[otherFoot].y - .25 * L && Math.hypot(lm[foot].x - lm[otherKnee].x, lm[foot].y - lm[otherKnee].y) < .35 * L; };
+/* arabesque (seen from the front): the lifted foot is high and away from the standing knee */
+const arab = (lm, foot, otherFoot, otherKnee) => { const L = legLen(lm); return lm[foot].y < lm[otherKnee].y && lm[foot].y < lm[otherFoot].y - .4 * L && Math.hypot(lm[foot].x - lm[otherKnee].x, lm[foot].y - lm[otherKnee].y) > .35 * L; };
+const BONES = [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16], [11, 23], [12, 24], [23, 24], [23, 25], [25, 27], [24, 26], [26, 28]];
+function watchPose(lmk, video, cv, ring, line, check, need, text) {
+  return new Promise(res => {
+    const t0 = performance.now(); let held = 0, last = t0, warned = 0;
+    ring.hidden = false;
+    const tick = now => {
+      if (!video.isConnected) return res(false);
+      const dt = now - last; last = now;
+      let ok = false, seen = false;
+      try {
+        const r = lmk.detectForVideo(video, now);
+        const lm = r && r.landmarks && r.landmarks[0];
+        const g = cv.getContext('2d'); cv.width = video.videoWidth || 640; cv.height = video.videoHeight || 480; g.clearRect(0, 0, cv.width, cv.height);
+        if (lm) {
+          seen = need.every(i => (lm[i].visibility === undefined || lm[i].visibility > .5));
+          ok = seen && check(lm);
+          g.lineWidth = 8; g.lineCap = 'round'; g.strokeStyle = ok ? '#7BE0A8' : '#F2C46D';
+          BONES.forEach(([a, b]) => { g.beginPath(); g.moveTo(lm[a].x * cv.width, lm[a].y * cv.height); g.lineTo(lm[b].x * cv.width, lm[b].y * cv.height); g.stroke(); });
+        }
+      } catch (e) {}
+      held = ok ? held + dt : Math.max(0, held - dt * 2);
+      const p = Math.min(1, held / 1500);
+      ring.style.setProperty('--p', p);
+      ring.textContent = ok ? 'キープ！' : (seen ? 'ポーズを まねしてね' : 'からだ ぜんぶが うつるように はなれてね');
+      if (!seen && now - warned > 6000 && now - t0 > 2500) { warned = now; say('からだ ぜんぶが うつるように、すこし はなれてね'); }
+      if (p >= 1) return res(true);
+      if (now - t0 > 25000) return res(false);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+/* ---------- 7. guessing quiz ---------- */
+PLAY.quiz = async (area, done) => {
+  const Q = [
+    ['くるみわりにんぎょうは、なにを わる にんぎょう？', ['くるみ', 'たまご', 'いし'], 0, 'くるみの からを わる にんぎょうだよ。'],
+    ['クララに くるみわりにんぎょうを くれたのは だれ？', ['サンタクロース', 'ドロッセルマイヤーおじさん', 'ねずみの おうさま'], 1, 'ふしぎな ドロッセルマイヤーおじさんが くれたよ。'],
+    ['よなかに あらわれて、たたかったのは？', ['ねこ', 'いぬ', 'ねずみ'], 2, 'ねずみの おうさまと ねずみたちが あらわれたよ。'],
+    ['おかしの くにで まっていたのは？', ['こんぺいとうの せい', 'ゆきだるま', 'まほうつかい'], 0, 'こんぺいとうの せいが むかえて くれたよ。']
+  ];
+  const line = h('div', 'say'), o = h('div', 'opts'), mark = h('div', 'big'); area.append(mark, line, o);
+  for (const [q, opts, a, ex] of Q) {
+    mark.textContent = '❓'; line.textContent = q + ' どれだと おもう？'; say(line.textContent); o.innerHTML = '';
+    await new Promise(res => {
+      let tried = false;
+      opts.forEach((t, i) => { const b = btn('opt', t, () => {
+        if (i === a) { b.classList.add('right'); sfx.yay(); mark.textContent = '⭕'; line.textContent = (tried ? 'せいかい！ ' : 'あたり！ ') + ex; say(line.textContent); setTimeout(res, 3200); [...o.children].forEach(x => x.disabled = true); }
+        else { tried = true; b.classList.add('wrong'); b.disabled = true; sfx.no(); say('おしい！ もう いちど えらんでね'); }
+      }); o.appendChild(b); });
+    });
+    if (!o.isConnected) return;
+  }
+  done();
+};
+
+/* ---------- 8. sticker book ---------- */
+PLAY.collect = (area, done) => {
+  const got = GAMES.filter(g => child.done.has(g[0])).map(g => g[3]);
+  const stickers = got.length ? got : ['⭐', '💂', '🍬'];
+  const line = h('div', 'say', got.length ? 'あつめた シールを、ぶたいに はってね。ゆびで うごかせるよ' : 'シールを ぶたいに はってね。ほかの あそびを すると シールが ふえるよ'); say(line.textContent);
+  const st = h('div', 'stage'); st.style.background = 'linear-gradient(#3B2A5A 0 70%, #C9A27A 70% 100%)';
+  const curtain = h('div', ''); curtain.style.cssText = 'position:absolute;inset:0;background:linear-gradient(90deg,#B0203A 0 12%,transparent 12% 88%,#B0203A 88%);pointer-events:none'; st.appendChild(curtain);
+  const tray = h('div', 'row'); let placed = 0;
+  const fin = btn('go', 'できた！ ▶', done); fin.hidden = true;
+  stickers.concat(['⭐', '🌸', '✨']).forEach(e => {
+    const b = btn('tile', '', () => {
+      const s = h('div', 'sticker', e); s.style.left = (25 + Math.random() * 50) + '%'; s.style.top = (30 + Math.random() * 40) + '%'; st.appendChild(s); sfx.pop();
+      s.addEventListener('pointerdown', ev => { s.setPointerCapture(ev.pointerId); const r = st.getBoundingClientRect();
+        const mv = m => { s.style.left = ((m.clientX - r.left) / r.width * 100) + '%'; s.style.top = ((m.clientY - r.top) / r.height * 100) + '%'; };
+        const up = () => { s.removeEventListener('pointermove', mv); s.removeEventListener('pointerup', up); };
+        s.addEventListener('pointermove', mv); s.addEventListener('pointerup', up); });
+      if (++placed >= 3) fin.hidden = false;
+    });
+    b.style.minHeight = '64px'; b.style.padding = '6px 10px'; b.appendChild(h('span', 'e', e)); b.querySelector('.e').style.fontSize = '34px'; tray.appendChild(b);
+  });
+  area.append(line, st, tray, fin);
+};
+
+hub();
+})();
+</script>
+
+</body></html>
